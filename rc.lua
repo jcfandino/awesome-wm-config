@@ -60,7 +60,7 @@ customization.config.version = "1.7.18"
 customization.config.help_url = "https://github.com/pw4ever/awesome-wm-config/tree/" .. customization.config.version
 
 customization.default.property = {
-    layout = awful.layout.suit.floating,
+    layout = awful.layout.suit.tile,
     mwfact = 0.5,
     nmaster = 1,
     ncol = 1,
@@ -87,7 +87,8 @@ naughty.config.presets.critical.opacity = customization.default.property.critica
 
 do
     local config_path = awful.util.getdir("config")
-    bashets.set_script_path(config_path .. "/modules/bashets/")
+    bashets.set_script_path("~/bin/")
+    --bashets.set_script_path(config_path .. "/modules/bashets/")
 end
 
 -- {{{ Error handling
@@ -252,7 +253,7 @@ do
     end
     )
 
-    customization.timer.change_wallpaper:start()
+    --customization.timer.change_wallpaper:start()
     -- first trigger
     customization.func.change_wallpaper()
     --}}
@@ -263,10 +264,10 @@ end
 
 --{{
 local tools = {
-    terminal = "sakura",
+    terminal = "urxvt",
     system = {
-        filemanager = "pcmanfm",
-        taskmanager = "lxtask",
+        filemanager = "thunar",
+        taskmanager = "urxvt -e htop",
     },
     browser = {
     },
@@ -274,15 +275,15 @@ local tools = {
     },
 }
 
-tools.browser.primary = os.getenv("BROWSER") or "firefox"
+tools.browser.primary = os.getenv("BROWSER") or "opera"
 tools.browser.secondary = ({chromium="firefox", firefox="chromium"})[tools.browser.primary]
 
 -- alternative: override
 --tools.browser.primary = "google-chrome-stable"
 --tools.browser.secondary = "firefox"
 
-tools.editor.primary = os.getenv("EDITOR") or "gvim"
-tools.editor.secondary = ({emacs="gvim", gvim="emacs"})[tools.editor.primary]
+tools.editor.primary = os.getenv("EDITOR") or "vim"
+tools.editor.secondary = ({emacs="vim", gvim="emacs"})[tools.editor.primary]
 
 -- alternative: override
 --tools.editor.primary = "gvim"
@@ -320,11 +321,18 @@ modkey = "Mod4"
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
 {
-    awful.layout.suit.floating,
-    awful.layout.suit.tile,
+    awful.layout.suit.tile.left,
+    awful.layout.suit.tile.bottom,
+    awful.layout.suit.tile.top,
     awful.layout.suit.fair,
-    awful.layout.suit.max.fullscreen,
-    awful.layout.suit.magnifier,
+    awful.layout.suit.fair.horizontal,
+--    awful.layout.suit.spiral,
+--    awful.layout.suit.spiral.dwindle,
+--    awful.layout.suit.max,
+--    awful.layout.suit.max.fullscreen,
+--    awful.layout.suit.magnifier,
+    awful.layout.suit.floating,
+    awful.layout.suit.tile
 }
 --[[
 local layouts =
@@ -1539,6 +1547,17 @@ menu = mymainmenu })
 --customization.widgets.textclock = wibox.widget.textbox()
 --bashets.register("date.sh", {widget=customization.widgets.textclock, update_time=1, format="$1 <span fgcolor='red'>$2</span> <small>$3$4</small> <b>$5<small>$6</small></b>"}) -- http://awesome.naquadah.org/wiki/Bashets
 
+customization.widgets.cputemp = wibox.widget.textbox()
+bashets.register("temp.sh", {
+    widget=customization.widgets.cputemp,
+    update_time = 1,
+    format="<span fgcolor='#EE4444'>$1 $2 $3</span>"})
+
+customization.widgets.batt = wibox.widget.textbox()
+bashets.register("battery.sh", {
+    widget=customization.widgets.batt,
+    update_time = 1,
+    format="<span fgcolor='#c5f779'>$1 $2</span>"})
 -- vicious widgets: http://awesome.naquadah.org/wiki/Vicious
 
 customization.widgets.cpuusage = awful.widget.graph()
@@ -1565,7 +1584,7 @@ end
 
 customization.widgets.memusage = wibox.widget.textbox()
 vicious.register(customization.widgets.memusage, vicious.widgets.mem,
-  "<span fgcolor='yellow'>$1% ($2MB/$3MB)</span>", 3)
+  "<span fgcolor='#41e1e9'>RAM $1%</span>", 3)
 do
     local prog=tools.system.taskmanager
     local started=false
@@ -1581,6 +1600,7 @@ do
     ))
 end
 
+--[[
 customization.widgets.bat0 = awful.widget.progressbar()
 customization.widgets.bat0:set_width(8)
 customization.widgets.bat0:set_height(10)
@@ -1590,7 +1610,11 @@ customization.widgets.bat0:set_border_color(nil)
 customization.widgets.bat0:set_color({ type = "linear", from = { 0, 0 }, to = { 0, 10 },
   stops = { { 0, "#AECF96" }, { 0.5, "#88A175" }, { 1, "#FF5656" }}})
 vicious.register(customization.widgets.bat0, vicious.widgets.bat, "$2", 61, "BAT0")
-do
+
+-- JC Disabled battery action
+-- TODO Change to percentage text
+if false then
+--do
     local prog="gnome-control-center power"
     local started=false
     customization.widgets.bat0:buttons(awful.util.table.join(
@@ -1604,50 +1628,16 @@ do
     end)
     ))
 end
-
+--]]
 customization.widgets.mpdstatus = wibox.widget.textbox()
 customization.widgets.mpdstatus:set_ellipsize("end")
-vicious.register(customization.widgets.mpdstatus, vicious.widgets.mpd,
-  function (mpdwidget, args)
-    local text = nil
-    local state = args["{state}"]
-    if state then
-      if state == "Stop" then 
-        text = ""
-      else 
-        text = args["{Artist}"]..' - '.. args["{Title}"]
-      end
-      return '<span fgcolor="light green"><b>[' .. state .. ']</b> <small>' .. text .. '</small></span>'
-    end
-    return ""
-  end, 1)
 -- http://git.sysphere.org/vicious/tree/README
-customization.widgets.mpdstatus = wibox.layout.constraint(customization.widgets.mpdstatus, "max", 180, nil)
-do
-    customization.widgets.mpdstatus:buttons(awful.util.table.join(
-    awful.button({ }, 1, function ()
-        awful.util.spawn("mpc toggle")
-    end),
-    awful.button({ }, 2, function ()
-        awful.util.spawn("mpc prev")
-    end),
-    awful.button({ }, 3, function ()
-        awful.util.spawn("mpc next")
-    end),
-    awful.button({ }, 4, function ()
-        awful.util.spawn("mpc seek -1%")
-    end),
-    awful.button({ }, 5, function ()
-        awful.util.spawn("mpc seek +1%")
-    end)
-    ))
-end
 
 customization.widgets.volume = wibox.widget.textbox()
 vicious.register(customization.widgets.volume, vicious.widgets.volume,
-  "<span fgcolor='cyan'>$1%$2</span>", 1, "Master")
+  "<span fgcolor='#41C6be'>$2 $1%</span>", 1, "Master")
 do
-    local prog="gnome-alsamixer"
+    local prog="pavucontrol"
     local started=false
     customization.widgets.volume:buttons(awful.util.table.join(
     awful.button({ }, 1, function ()
@@ -1665,20 +1655,20 @@ do
         awful.util.spawn("amixer sset Master toggle")
     end),
     awful.button({ }, 4, function ()
-        awful.util.spawn("amixer sset Master 1%-")
+        awful.util.spawn("amixer sset Master 2%+")
     end),
     awful.button({ }, 5, function ()
-        awful.util.spawn("amixer sset Master 1%+")
+        awful.util.spawn("amixer sset Master 2%-")
     end)
     ))
 end
 
 customization.widgets.date = wibox.widget.textbox()
-vicious.register(customization.widgets.date, vicious.widgets.date, "%x %X%Z", 1)
+vicious.register(customization.widgets.date, vicious.widgets.date, "%b %d %H:%M", 1)
 do
-    local prog1="gnome-control-center datetime"
+    local prog1="urxvt -e bash -c 'cal -3 && read'"
     local started1=false
-    local prog2="gnome-control-center region"
+    local prog2="urxvt -e bash -c 'cal -y && read'"
     local started2=false
     customization.widgets.date:buttons(awful.util.table.join(
     awful.button({ }, 1, function ()
@@ -1798,15 +1788,17 @@ for s = 1, screen.count() do
 
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
-    if s == 1 then right_layout:add(wibox.widget.systray()) end
+    right_layout:add(customization.widgets.cputemp)
     right_layout:add(customization.widgets.cpuusage)
     right_layout:add(customization.widgets.memusage)
-    right_layout:add(customization.widgets.bat0)
+    --right_layout:add(customization.widgets.bat0)
     right_layout:add(customization.widgets.mpdstatus)
     --right_layout:add(customization.widgets.audio_volume)
+    right_layout:add(customization.widgets.batt)
     right_layout:add(customization.widgets.volume)
     right_layout:add(customization.widgets.date)
     --right_layout:add(customization.widgets.textclock)
+    if s == 1 then right_layout:add(wibox.widget.systray()) end
     right_layout:add(customization.widgets.layoutbox[s])
 
     -- Now bring it all together (with the tasklist in the middle)
@@ -1821,7 +1813,28 @@ end
 util.taglist.set_taglist(customization.widgets.taglist)
 -- }}}
 
-do
+-- JC
+-- Simple tags, 1 .. 10 for all screens
+for i = 1, screen.count() do
+    for j = 1, 10 do
+        local tag = awful.tag.add(j,
+        {
+            screen = i,
+            layout = customization.default.property.layout,
+            mwfact = customization.default.property.mwfact,
+            nmaster = customization.default.property.nmaster,
+            ncol = customization.default.property.ncol,
+        }
+        )
+        awful.tag.move(j, tag)
+        if j == 1 then
+            awful.tag.viewonly(tag)
+        end
+    end
+end
+----do
+-- Fancy stuff disabled
+if false then
     -- test whether screen 1 tag file exists
     local f = io.open(awesome_tags_fname .. ".0", "r")
     if f then
@@ -1899,15 +1912,16 @@ do
 
     end
 end
-
+-- End Fancy stuff
 
 -- {{{ Mouse bindings
 root.buttons(awful.util.table.join(
-awful.button({ }, 1, customization.func.all_clients),
-awful.button({ }, 2, customization.func.tag_action_menu),
-awful.button({ }, 3, function () mymainmenu:toggle() end),
+--awful.button({ }, 1, customization.func.all_clients),
+awful.button({ }, 3, function () awful.util.spawn(tools.terminal) end),
+--awful.button({ }, 3, customization.func.tag_action_menu),
+awful.button({ }, 2, function () mymainmenu:toggle() end),
 awful.button({ }, 4, awful.tag.viewprev),
-awful.button({ }, 5, awful.tag.viewprev)
+awful.button({ }, 5, awful.tag.viewnext)
 ))
 -- }}}
 notifylist = {}
@@ -1961,13 +1975,13 @@ end),
 
 --- restart/quit/info
 
-awful.key({ modkey, "Control" }, "r", awesome.restart),
+awful.key({ modkey, "Shift" }, "r", awesome.restart),
 
 awful.key({ modkey, "Shift"   }, "q", awesome.quit),
 
-awful.key({ modkey }, "\\", customization.func.systeminfo),
+awful.key({ modkey }, "F1", customization.func.systeminfo),
 
-awful.key({modkey}, "F1", customization.func.help),
+--awful.key({modkey}, "F1", customization.func.help),
 
 awful.key({ "Ctrl", "Shift" }, "Escape", function ()
     awful.util.spawn(tools.system.taskmanager)
@@ -1981,9 +1995,9 @@ uniarg:key_repeat({ modkey, "Shift"   }, "space", function () awful.layout.inc(l
 
 --- multiple screens/multi-head/RANDR
 
-uniarg:key_repeat({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
+uniarg:key_repeat({ modkey,           }, "Tab", function () awful.screen.focus_relative( 1) end),
 
-uniarg:key_repeat({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
+--uniarg:key_repeat({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
 
 uniarg:key_repeat({ modkey,           }, "o", awful.client.movetoscreen),
 
@@ -2029,7 +2043,7 @@ awful.key({ modkey }, "c", function ()
     awful.util.spawn(tools.editor.primary .. " " .. awful.util.getdir("config") .. "/rc.lua" )
 end),
 
-awful.key({ modkey, "Shift" }, "/", function() mymainmenu:toggle({keygrabber=true}) end),
+--awful.key({ modkey, "Shift" }, "/", function() mymainmenu:toggle({keygrabber=true}) end),
 
 awful.key({ modkey, }, ";", function()
   local c = client.focus
@@ -2083,13 +2097,13 @@ awful.key({modkey, "Shift"}, "a", customization.func.tag_add_before),
 
 awful.key({modkey, "Shift"}, "d", customization.func.tag_delete),
 
-awful.key({modkey, "Shift"}, "r", customization.func.tag_rename),
+--awful.key({modkey, "Shift"}, "r", customization.func.tag_rename),
 
 --- view
 
-uniarg:key_repeat({modkey,}, "p", customization.func.tag_view_prev),
+uniarg:key_repeat({modkey,}, "Left", customization.func.tag_view_prev),
 
-uniarg:key_repeat({modkey,}, "n", customization.func.tag_view_next),
+uniarg:key_repeat({modkey,}, "Right", customization.func.tag_view_next),
 
 awful.key({modkey,}, "z", customization.func.tag_last),
 
@@ -2107,11 +2121,11 @@ uniarg:key_repeat({modkey, "Control"}, "n", customization.func.tag_move_forward)
 
 uniarg:key_repeat({ modkey,           }, "j", customization.func.client_focus_next),
 
-uniarg:key_repeat({ modkey,           }, "Tab", customization.func.client_focus_next),
+--uniarg:key_repeat({ modkey,           }, "Tab", customization.func.client_focus_next),
 
 uniarg:key_repeat({ modkey,           }, "k", customization.func.client_focus_prev),
 
-uniarg:key_repeat({ modkey, "Shift"   }, "Tab", customization.func.client_focus_prev),
+--uniarg:key_repeat({ modkey, "Shift"   }, "Tab", customization.func.client_focus_prev),
 
 awful.key({ modkey,           }, "y", customization.func.client_focus_urgent),
 
@@ -2123,9 +2137,9 @@ uniarg:key_repeat({ modkey, "Shift"   }, "k", customization.func.client_swap_pre
 
 --- move/copy to tag
 
-uniarg:key_repeat({modkey, "Shift"}, "n", customization.func.client_move_next),
+uniarg:key_repeat({modkey, "Shift"}, "Right", customization.func.client_move_next),
 
-uniarg:key_repeat({modkey, "Shift"}, "p", customization.func.client_move_prev),
+uniarg:key_repeat({modkey, "Shift"}, "Left", customization.func.client_move_prev),
 
 awful.key({modkey, "Shift"}, "g", customization.func.client_move_to_tag),
 
@@ -2157,7 +2171,7 @@ awful.key({ modkey, "Shift" }, "`", customization.func.client_toggle_titlebar),
 
 awful.key({ modkey, }, "`", customization.func.system_lock),
 
-awful.key({ modkey, }, "Home", customization.func.system_lock),
+awful.key({ modkey, "Shift" }, "l", customization.func.system_lock),
 
 awful.key({ modkey, }, "End", customization.func.system_suspend),
 
@@ -2169,8 +2183,39 @@ awful.key({ modkey, }, "Insert", customization.func.system_reboot),
 
 awful.key({ modkey, }, "Delete", customization.func.system_power_off),
 
-awful.key({ modkey, }, "/", customization.func.app_finder),
+--awful.key({ modkey, }, "/", customization.func.app_finder),
 
+awful.key({ modkey, "Shift"   }, "Return", function ()
+    awful.util.spawn(terminal_big)
+end),
+
+awful.key({ modkey,           }, "v", function ()
+    awful.util.spawn("pavucontrol")
+end),
+
+awful.key({ modkey,           }, "[", function ()
+    awful.util.spawn("mocp -v -10")
+end),
+
+awful.key({ modkey,           }, "]", function ()
+    awful.util.spawn("mocp -v +10")
+end),
+
+awful.key({ modkey, "Shift"   }, "[", function ()
+    awful.util.spawn("mocp -r")
+end),
+
+awful.key({ modkey, "Shift"   }, "]", function ()
+    awful.util.spawn("mocp -f")
+end),
+
+awful.key({ modkey,           }, "\\", function ()
+    awful.util.spawn("mocp -G")
+end),
+
+awful.key({ modkey, "Shift"   }, "/", function ()
+    awful.util.spawn("/home/xuan/bin/show-song.sh")
+end),
 --- everyday
 
 uniarg:key_repeat({ modkey, "Mod1", }, "l", function ()
@@ -2185,9 +2230,9 @@ uniarg:key_repeat({ modkey,  }, "E", function ()
     awful.util.spawn(tools.system.filemanager)
 end),
 
-uniarg:key_repeat({ modkey, "Mod1", }, "p", function ()
-    awful.util.spawn("putty")
-end),
+--uniarg:key_repeat({ modkey, "Mod1", }, "p", function ()
+--    awful.util.spawn("putty")
+--end),
 
 uniarg:key_repeat({ modkey, "Mod1", }, "r", function ()
     awful.util.spawn("remmina")
@@ -2379,9 +2424,7 @@ nil
 --- operation
 clientkeys = awful.util.table.join(
 
-awful.key({ modkey, "Shift"   }, "c", customization.func.client_kill),
-
-awful.key({ "Mod1",   }, "F4", customization.func.client_kill),
+awful.key({ modkey            }, "q", customization.func.client_kill),
 
 awful.key({ modkey,           }, "f", customization.func.client_fullscreen),
 
@@ -2389,13 +2432,13 @@ awful.key({ modkey,           }, "m", customization.func.client_maximize),
 
 -- move client to sides, i.e., sidelining
 
-awful.key({ modkey,           }, "Left", customization.func.client_sideline_left),
+awful.key({ modkey, "Shift"   }, "Left", customization.func.client_sideline_left),
 
-awful.key({ modkey,           }, "Right", customization.func.client_sideline_right),
+awful.key({ modkey, "Shift"   }, "Right", customization.func.client_sideline_right),
 
-awful.key({ modkey,           }, "Up", customization.func.client_sideline_top),
+awful.key({ modkey, "Shift"   }, "Up", customization.func.client_sideline_top),
 
-awful.key({ modkey,           }, "Down", customization.func.client_sideline_bottom),
+awful.key({ modkey, "Shift"   }, "Down", customization.func.client_sideline_bottom),
 
 -- extend client sides
 
@@ -2455,7 +2498,7 @@ end
 
 -- maximize/minimize
 
-awful.key({ modkey, "Shift"   }, "m", customization.func.client_minimize),
+awful.key({ modkey,           }, "n", customization.func.client_minimize),
 
 awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle),
 
@@ -2468,13 +2511,13 @@ awful.key({ modkey,           }, ",", customization.func.client_maximize_horizon
 
 awful.key({ modkey,           }, ".", customization.func.client_maximize_vertical),
 
-awful.key({ modkey,           }, "[", customization.func.client_opaque_less),
+-- awful.key({ modkey,           }, "[", customization.func.client_opaque_less),
 
-awful.key({ modkey,           }, "]", customization.func.client_opaque_more),
+-- awful.key({ modkey,           }, "]", customization.func.client_opaque_more),
 
-awful.key({ modkey, 'Shift'   }, "[", customization.func.client_opaque_off),
+-- awful.key({ modkey, 'Shift'   }, "[", customization.func.client_opaque_off),
 
-awful.key({ modkey, 'Shift'   }, "]", customization.func.client_opaque_on),
+-- awful.key({ modkey, 'Shift'   }, "]", customization.func.client_opaque_on),
 
 awful.key({ modkey, "Control" }, "Return", customization.func.client_swap_with_master),
 
@@ -2636,7 +2679,7 @@ awful.rules.rules = {
     },
 
     { 
-        rule = { class = "MPlayer" },
+        rule = { class = "SMPlayer" },
         properties = { 
             floating = true,
             opacity = 1,
@@ -2655,6 +2698,21 @@ awful.rules.rules = {
     { rule = { class = "Firefox" },
       properties = { tag = tags[1][2] } },
     --]]
+    { rule = { class = "Opera" },
+        properties = {
+            tag = awful.tag.gettags(1)[1]
+        }
+    },
+    { rule = { class = "chromium" },
+        properties = {
+            tag = awful.tag.gettags(1)[2]
+        }
+    },
+    { rule = { class = "Eclipse" },
+        properties = {
+            tag = awful.tag.gettags(1)[3]
+        }
+    },
 
     {
         rule = { class = "Kmag" },
@@ -2668,6 +2726,14 @@ awful.rules.rules = {
         end,
     },
 
+    {
+        rule = { class = "URxvt" },
+        properties = {
+            opacity = 0.9
+        },
+        callback = function (c)
+        end,
+    },
 
     {
         rule = { class = "Conky" },
@@ -2676,6 +2742,10 @@ awful.rules.rules = {
             opacity = 0.4,
             focusable = false,
             ontop = false,
+            floating = true,
+            skip_taskbar = true,
+            border_width = 0,
+            screen = 1
         },
     }
 
@@ -2803,3 +2873,4 @@ end
 -- HACK continue
 awful.util.spawn_with_shell("if ! [ -e " .. awesome_autostart_once_fname .. " ]; then dex -a -e awesome; touch " .. awesome_autostart_once_fname .. "; fi")
 customization.func.client_opaque_on(nil) -- start xcompmgr
+

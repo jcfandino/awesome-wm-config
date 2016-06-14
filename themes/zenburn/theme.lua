@@ -15,7 +15,7 @@ theme.confdir       = awful.util.getdir("config") .. "/themes/" .. theme.name
 
 
 -- {{{ Styles
-theme.font      = "Profont 8"
+theme.font      = "Dejavu Sans 8"
 
 -- {{{ Colors
 theme.fg_normal = "#DCDCCC"
@@ -37,8 +37,8 @@ theme.fg_urgent     = "#A36666"
 -- }}}
 
 -- {{{ Borders
-theme.border_width  = 1
-theme.border_focus  = "#6F6F6F"
+theme.border_width  = 2
+theme.border_focus  = "#F0DFAF"
 theme.border_normal = theme.bg_normal
 theme.border_marked = theme.fg_urgent
 -- }}}
