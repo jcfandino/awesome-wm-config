@@ -74,8 +74,8 @@ customization.default.property = {
     minimal_client_height = 50,
 }
 
-customization.default.compmgr = 'xcompmgr'
-customization.default.compmgr_args = '-f -c -s'
+customization.default.compmgr = 'compton'
+customization.default.compmgr_args = '-cCGb --backend glx --vsync opengl' --'-f -c -s'
 customization.default.wallpaper_change_interval = 15
 
 customization.option.wallpaper_change_p = true
@@ -2349,6 +2349,10 @@ awful.key({ }, "XF86Sleep", function ()
 end),
 
 
+awful.key({ modkey }, "BackSpace", function ()
+    awful.util.spawn("bin/resolution.sh")
+end),
+
 awful.key({ modkey }, "XF86Sleep", function ()
     awful.util.spawn("systemctl hibernate")
 end),
@@ -2515,9 +2519,9 @@ awful.key({ modkey,           }, ".", customization.func.client_maximize_vertica
 
 -- awful.key({ modkey,           }, "]", customization.func.client_opaque_more),
 
--- awful.key({ modkey, 'Shift'   }, "[", customization.func.client_opaque_off),
+awful.key({ modkey, 'Shift'   }, "c", customization.func.client_opaque_off),
 
--- awful.key({ modkey, 'Shift'   }, "]", customization.func.client_opaque_on),
+awful.key({ modkey, 'Shift'   }, "v", customization.func.client_opaque_on),
 
 awful.key({ modkey, "Control" }, "Return", customization.func.client_swap_with_master),
 
@@ -2706,6 +2710,14 @@ awful.rules.rules = {
     { rule = { class = "chromium" },
         properties = {
             tag = awful.tag.gettags(1)[2]
+        }
+    },
+    { rule = { class = "Plugin-container" },
+        properties = {
+            ontop = true,
+            floating = true,
+            skip_taskbar = true,
+            border_width = 0,
         }
     },
     { rule = { class = "Eclipse" },
