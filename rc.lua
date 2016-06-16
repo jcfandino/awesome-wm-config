@@ -2349,6 +2349,10 @@ awful.key({ }, "XF86Sleep", function ()
 end),
 
 
+awful.key({ "Control", "Shift" }, "k", function ()
+    awful.util.spawn("bin/remapkeys.sh")
+end),
+
 awful.key({ modkey }, "BackSpace", function ()
     awful.util.spawn("bin/resolution.sh")
 end),
@@ -2765,6 +2769,24 @@ awful.rules.rules = {
 -- }}}
 
 -- {{{ Signals
+
+
+tag.connect_signal("property::selected", function (t)
+    local selected = tostring(t.selected) == "false"
+    if selected then
+      local focus_timer = timer({ timeout = 0.1 })
+      focus_timer:connect_signal("timeout", function()
+        local c = awful.mouse.client_under_pointer()
+        if not (c == nil) then
+          client.focus = c
+          c:raise()
+        end
+        focus_timer:stop()
+      end)
+      focus_timer:start()
+    end
+  end
+)
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function (c, startup)
     -- Enable sloppy focus
