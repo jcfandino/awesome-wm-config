@@ -2169,7 +2169,7 @@ awful.key({ modkey, "Shift" }, "`", customization.func.client_toggle_titlebar),
 
 --- admin
 
-awful.key({ modkey, }, "`", customization.func.system_lock),
+-- awful.key({ modkey, }, "`", customization.func.system_lock),
 
 awful.key({ modkey, "Shift" }, "l", customization.func.system_lock),
 
@@ -2705,10 +2705,21 @@ awful.rules.rules = {
     Set Firefox to always map on tags number 2 of screen 1.
     { rule = { class = "Firefox" },
       properties = { tag = tags[1][2] } },
-    --]]
     { rule = { class = "Opera" },
         properties = {
             tag = awful.tag.gettags(1)[1]
+        }
+    },
+    --]]
+    { rule = { class = "Google Hangouts is sharing a window with hangouts.google.com." },
+        properties = {
+            floating = true, 
+            tag = awful.tag.gettags(1)[2]
+        }
+    },
+    { rule = { class = "google-chrome" },
+        properties = {
+            tag = awful.tag.gettags(1)[2]
         }
     },
     { rule = { class = "chromium" },
