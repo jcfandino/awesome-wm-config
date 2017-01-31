@@ -42,6 +42,10 @@
 
 # [awesome Window Manager][awesome] configuration
 
+Please use the branch that **matches your Awesome version**:
+* [Awesome 3.x](https://github.com/pw4ever/awesome-wm-config/tree/awesome-3.x).
+* [Awesome 4.x](https://github.com/pw4ever/awesome-wm-config/tree/awesome-4.x).
+
 <img alt="a screenshot of it in action" src="https://raw.githubusercontent.com/pw4ever/awesome-wm-config/master/screenshot/pengw-awesome-screenshot-20150215.png" width="960px" />
 
 ## intro
@@ -93,7 +97,7 @@ On [Arch Linux][archlinux]:
 
 ```bash
 sudo pacman -S --needed --noconfirm feh dex xdg-utils screenfetch scrot xcompmgr kdeaccessibility wmname
-sudo pacman -S --needed --noconfirm alsa-utils gnome-alsamixer xorg-xbacklight xf86-input-synaptics cheese mpd mpc workrave
+sudo pacman -S --needed --noconfirm alsa-utils pavucontrol xorg-xbacklight xf86-input-synaptics cheese mpd mpc workrave
 sudo pacman -S --needed --noconfirm xscreensaver networkmanager network-manager-applet mate-power-manager arandr xfce4-appfinder xfce4-screenshooter gnome-control-center lxtask
 sudo pacman -S --needed --noconfirm pcmanfm gvfs udisks udiskie lxsession lxappearance xarchiver 
 sudo pacman -S --needed --noconfirm sakura terminator conky gksu launchy
@@ -422,8 +426,12 @@ customization.timer.change_wallpaper.timeout=7.5 -- choose a wallpaper every 7.5
 
 | value | type | meaning | default value |
 | --- | --- | --- | --- |
-|customization.option.wallpaper_change_p|boolean|random wallpaper choosing enabled?|true|
-|customization.timer.change_wallpaper.timeout|number|randomly choose a wallpaper from the "wallpaper" directory after every *this number of* seconds|15|
+|`customization.option.wallpaper_change_p`|boolean|random wallpaper choosing enabled?|`true`|
+|`customization.timer.change_wallpaper.timeout`|number|randomly choose a wallpaper from the "wallpaper" directory after every *this number of* seconds|`15`|
+|`customization.option.tag_persistent_p`|boolean|tag persistent across restart? `false` for clean slate|`true`|
+|`customization.option.low_battery_notification_p`|boolean|warn about low battery condition|`true`|
+|`customization.widgets.bat.warning_threshold`|number|low battery notification threshold in percentage|`10`|
+|`customization.widgets.bat.instance`|string|battery under monitor for low battery notification|`"BAT0"`|
 
 ## todo
 
