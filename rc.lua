@@ -2195,12 +2195,13 @@ uniarg:key_repeat({ modkey, "Shift"   }, "space", function () awful.layout.inc(l
 --- multiple screens/multi-head/RANDR
 
 --uniarg:key_repeat({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
+uniarg:key_repeat({ modkey,           }, "Tab", function () awful.screen.focus_relative( 1) end),
 
 --uniarg:key_repeat({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
 
---uniarg:key_repeat({ modkey,           }, "o", function ()
-    --customization.func.client_move_screen_relatively( 1)
---end),
+uniarg:key_repeat({ modkey,           }, "o", function ()
+    customization.func.client_move_screen_relatively( 1)
+end),
 
 --uniarg:key_repeat({ modkey, "Shift"   }, "o", function ()
     --customization.func.client_move_screen_relatively(-1)
