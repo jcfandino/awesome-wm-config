@@ -2985,6 +2985,13 @@ awful.rules.rules = {
             tag = awful.tag.gettags(1)[10]
         }
     },
+    {  rule = { class = "Git-gui" },
+       properties = {
+           maximized_horizontal = true,
+           ontop = true,
+           floating = true
+       }
+    },
     --[[
     { rule = { class = "google-chrome" },
         properties = {
