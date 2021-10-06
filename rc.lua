@@ -1571,6 +1571,18 @@ myawesomemenu = {
     { "forcibly quit", function () customization.orig.quit() end },
 }
 
+-- vpn menu
+vpnmenu = {
+    { "connect", function()
+        awful.util.spawn("nordvpn c")
+        mymainmenu:hide()
+    end },
+    { "disconnect", function()
+        awful.util.spawn("nordvpn d")
+        mymainmenu:hide()
+    end }
+}
+
 mymainmenu = awful.menu({
   theme = { width=150, },
   items = {
@@ -1578,6 +1590,7 @@ mymainmenu = awful.menu({
     { "app &finder", customization.func.app_finder },
     { "&apps", myapp },
     { "&terminal", tools.terminal },
+    { "&vpn", vpnmenu },
     { "a&wesome", myawesomemenu, beautiful.awesome_icon },
     { "&client action", function () 
       customization.func.client_action_menu()
@@ -2578,9 +2591,9 @@ awful.key({ }, "XF86Sleep", function ()
 end),
 
 
-awful.key({ "Control", "Shift" }, "k", function ()
-    awful.util.spawn("bin/remapkeys.sh")
-end),
+--awful.key({ "Control", "Shift" }, "k", function ()
+    --awful.util.spawn("bin/remapkeys.sh")
+--end),
 
 awful.key({ modkey }, "BackSpace", function ()
     awful.util.spawn("bin/resolution.sh")
@@ -2932,16 +2945,47 @@ awful.rules.rules = {
         }, 
     },
 
-    --[[
-    Set Firefox to always map on tags number 2 of screen 1.
+    --Set some programs to always map on tags number
     { rule = { class = "Firefox" },
-      properties = { tag = tags[1][2] } },
-    { rule = { class = "Opera" },
         properties = {
             tag = awful.tag.gettags(1)[1]
         }
     },
-    --]]
+    { rule = { class = "Eclipse" },
+        properties = {
+            tag = awful.tag.gettags(1)[2]
+        }
+    },
+
+    { rule = { class = "Opera" },
+        properties = {
+            tag = awful.tag.gettags(1)[3]
+        }
+    },
+    {
+        rule = { class = "URxvt" },
+        properties = {
+            tag = awful.tag.gettags(1)[4]
+        },
+        callback = function (c)
+        end,
+    },
+    { rule = { class = "discord" },
+        properties = {
+            tag = awful.tag.gettags(1)[5]
+        }
+    },
+    { rule = { class = "blueman-manager" },
+        properties = {
+            tag = awful.tag.gettags(1)[10]
+        }
+    },
+    { rule = { class = "pavucontrol" },
+        properties = {
+            tag = awful.tag.gettags(1)[10]
+        }
+    },
+    --[[
     { rule = { class = "google-chrome" },
         properties = {
             tag = awful.tag.gettags(1)[2]
@@ -2952,6 +2996,7 @@ awful.rules.rules = {
             tag = awful.tag.gettags(1)[2]
         }
     },
+    --]]
     { rule = { class = "Plugin-container" },
         properties = {
             ontop = true,
@@ -2960,11 +3005,6 @@ awful.rules.rules = {
             border_width = 0,
         }
     },
---    { rule = { class = "Eclipse" },
---        properties = {
---            tag = awful.tag.gettags(1)[3]
---        }
---    },
 
     {
         rule = { class = "Kmag" },
@@ -2978,14 +3018,6 @@ awful.rules.rules = {
         end,
     },
 
-    {
-        rule = { class = "URxvt" },
-        properties = {
-            opacity = 0.9
-        },
-        callback = function (c)
-        end,
-    },
 
     {
         rule = { class = "Conky" },
