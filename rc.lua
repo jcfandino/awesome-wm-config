@@ -2284,7 +2284,7 @@ end),
 
 
 awful.key({ modkey }, "F5", function () 
-    awful.util.spawn("bin/random_emoji.sh 10" )
+    awful.util.spawn("bin/ungrab.sh" )
 end),
 --awful.key({ modkey, "Shift" }, "/", function() mymainmenu:toggle({keygrabber=true}) end),
 
@@ -2945,6 +2945,22 @@ awful.rules.rules = {
         }, 
     },
 
+    { 
+        rule = { class = "Qsynth" },
+        properties = { 
+            floating = true, 
+        }, 
+    },
+
+    { 
+        rule = { name = "seq24.*" },
+        properties = { 
+            floating = true, 
+        }, 
+    },
+
+    --[[
+    --TODO fix, started to get an error message
     --Set some programs to always map on tags number
     { rule = { class = "Firefox" },
         properties = {
@@ -2992,6 +3008,7 @@ awful.rules.rules = {
            floating = true
        }
     },
+    --]]
     --[[
     { rule = { class = "google-chrome" },
         properties = {
