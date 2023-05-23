@@ -2959,15 +2959,14 @@ awful.rules.rules = {
         }, 
     },
 
-    --[[
-    --TODO fix, started to get an error message
     --Set some programs to always map on tags number
+    --Note: if error message on popups then add name of main window to rule
     { rule = { class = "Firefox" },
         properties = {
             tag = awful.tag.gettags(1)[1]
         }
     },
-    { rule = { class = "Eclipse" },
+    { rule = { class = "Eclipse", name = "eclipse .*" },
         properties = {
             tag = awful.tag.gettags(1)[2]
         }
@@ -2986,6 +2985,7 @@ awful.rules.rules = {
         callback = function (c)
         end,
     },
+    --[[
     { rule = { class = "discord" },
         properties = {
             tag = awful.tag.gettags(1)[5]
