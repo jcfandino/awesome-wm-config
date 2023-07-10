@@ -38,7 +38,7 @@ theme.fg_urgent     = "#A36666"
 
 -- {{{ Borders
 theme.border_width  = 2
-theme.border_focus  = "#F0DFAF"
+theme.border_focus  = "#7F9F7F"
 theme.border_normal = theme.bg_normal
 theme.border_marked = theme.fg_urgent
 -- }}}
