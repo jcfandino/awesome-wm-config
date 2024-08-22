@@ -1891,6 +1891,21 @@ end))
 -- start bashets
 bashets.start()
 
+local function set_wallpaper2(s)
+    awful.wallpaper {
+        screen = s,
+        bg = FLAVOURS.base00,
+        widget = {
+            image                 = beautiful.wallpaper,
+            upscale               = true,
+            downscale             = true,
+            horizontal_fit_policy = "fit",
+            vertical_fit_policy   = "fit",
+            widget                = wibox.widget.imagebox
+        }
+    }
+end
+
 local function set_wallpaper(s)
     -- Wallpaper
     if beautiful.wallpaper then
@@ -2958,9 +2973,22 @@ awful.rules.rules = {
             floating = true, 
         }, 
     },
-
+    -- zoom creates small popup windows, make them floating
+    { rule = { class = "zoom", name = "" },
+        properties = {
+            floating = true
+        }
+    },
+    -- this is the window with the meetings
+    { rule = { class = "zoom", name = "Zoom - Licensed Account" },
+        properties = {
+            floating = false
+        }
+    },
     --Set some programs to always map on tags number
     --Note: if error message on popups then add name of main window to rule
+    --Note2: erros keps apprearing so...
+    --[[
     { rule = { class = "Firefox" },
         properties = {
             tag = awful.tag.gettags(1)[1]
@@ -2985,7 +3013,6 @@ awful.rules.rules = {
         callback = function (c)
         end,
     },
-    --[[
     { rule = { class = "discord" },
         properties = {
             tag = awful.tag.gettags(1)[5]
@@ -3052,6 +3079,20 @@ awful.rules.rules = {
             ontop = false,
             floating = true,
             skip_taskbar = true,
+            border_width = 0,
+            screen = 1
+        },
+    },
+
+    {
+        rule = { name = "GlobalProtect" },
+        properties = {
+            sticky = true,
+            placement = awful.placement.top_right,
+            focusable = false,
+            ontop = true,
+            floating = true,
+            skip_taskbar = false,
             border_width = 0,
             screen = 1
         },
